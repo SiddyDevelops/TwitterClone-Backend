@@ -14,7 +14,7 @@ model User {
 
   email String @unique
   name String
-  username String
+  username String @unique
 
   image String?
   bio String?
@@ -31,7 +31,7 @@ model Tweet {
   content String 
   image String?
   impressions Int @default(0)
-  
+
   userId Int
   user User @relation(fields: [userId], references: [id])
 }

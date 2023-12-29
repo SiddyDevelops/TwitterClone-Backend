@@ -159,5 +159,5 @@ experimental/**/*.db
 .next
 .vscode/
 .nuxt
-dev.db
+dev.db-journal
 *.env*
