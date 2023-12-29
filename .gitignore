@@ -137,3 +137,27 @@ dist
 
 # SvelteKit build / generate output
 .svelte-kit
+
+node_modules/
+yarn-error.log/
+vendor/
+tmp/
+dist/
+.DS_Store
+.idea
+tmp-resolvers
+package-lock.json
+flow-typed
+yarn.lock
+javascript/**/migrations/
+typescript/**/migrations/
+misc/**/migrations/
+databases/**/migrations/
+prisma/**/migrations/
+prisma/migrations/
+experimental/**/*.db
+.next
+.vscode/
+.nuxt
+dev.db
+*.env*
