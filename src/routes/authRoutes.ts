@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
+import { sendMail } from '../services/emailService';
+import emailTemplete from '../services/emailTemplate';
 import jwt from 'jsonwebtoken';
 const router = Router();
 const prisma = new PrismaClient();
@@ -43,12 +45,27 @@ router.post('/login', async (req,res)=>{
             }
         });
         
-        res.status(200).json({
+        // res.status(200).json({
+        //     status: 200,
+        //     message: 'Token generated successfully.',
+        //     data: createdToken
+        // });
+
+        // Send token to user's email
+        sendMail({
+            from: 'twitterclone@siddydevelops.com',
+            to: email,
+            subject: 'Twitter Clone By SiddyDevelops',
+            text: `twitterclone@siddydevelops.com shared a token with you`,
+            html: emailTemplete({
+                verificationToken: emailToken
+            })
+        });
+        return res.status(200).send({
             status: 200,
-            message: 'Token generated successfully.',
+            message: 'Token sent via email successfully.',
             data: createdToken
         });
-        // Send email to user's email
     } catch(err) {
         res.status(400).json({
             status: 400,
