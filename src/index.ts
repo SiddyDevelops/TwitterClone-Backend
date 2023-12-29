@@ -3,10 +3,10 @@ import userRoutes from './routes/userRoutes'
 import tweetRoutes from './routes/tweetRoutes'
 import authRoutes from './routes/authRoutes';
 import { authenticateToken } from './middlewares/authMiddleware';
+require('dotenv').config()
 
 const app = express();
 app.use(express.json());
-
 app.get('/', (req,res)=>{
     res.send('Hello World!');
 });
