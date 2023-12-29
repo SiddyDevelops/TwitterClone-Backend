@@ -2,6 +2,7 @@ import express from 'express';
 import userRoutes from './routes/userRoutes'
 import tweetRoutes from './routes/tweetRoutes'
 import authRoutes from './routes/authRoutes';
+import { authenticateToken } from './middlewares/authMiddleware';
 
 const app = express();
 app.use(express.json());
@@ -11,9 +12,9 @@ app.get('/', (req,res)=>{
 });
 
 // USER CRUD
-app.use('/user',userRoutes);
+app.use('/user',authenticateToken, userRoutes);
 // TWEET CRUD
-app.use('/tweet',tweetRoutes);
+app.use('/tweet',authenticateToken, tweetRoutes);
 // AUTH Endpoints
 app.use('/auth',authRoutes);
 
