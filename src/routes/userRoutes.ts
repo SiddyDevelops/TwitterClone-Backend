@@ -31,7 +31,9 @@ router.post('/', async (req,res)=>{
 
 // List Users
 router.get('/', async (req,res)=>{
-    const allUsers = await prisma.user.findMany();
+    const allUsers = await prisma.user.findMany({
+        //select: { id:true, name: true, image:true}
+    });
     res.status(200).json({
         status: 200,
         message: 'User list retrieved successfully.',
@@ -43,15 +45,18 @@ router.get('/', async (req,res)=>{
 router.get('/:id', async (req,res)=>{
     const { id } = req.params;
     try{
-        const user = await prisma.user.findUniqueOrThrow({ where: { id: Number(id)}});
+        const user = await prisma.user.findUniqueOrThrow({ 
+            where: { id: Number(id)}, 
+            include: {tweets:true}
+        });
         res.status(200).json({
             status: 200,
             message: 'User retrieved successfully.',
             data: user
         });
     } catch(err) {
-        res.status(204).json({
-            status: 204,
+        res.status(404).json({
+            status: 404,
             message: 'User does not exists.',
             data: err
         });
@@ -88,12 +93,12 @@ router.delete('/:id', async (req,res)=>{
         const response = await prisma.user.delete({ where: { id: Number(id) }});
         res.status(200).json({
             status: 200,
-            message: 'User delete successfully.',
+            message: 'User deleted successfully.',
             data: response
         });
     } catch(err) {
-        res.status(204).json({
-            status: 204,
+        res.status(404).json({
+            status: 404,
             message: 'User does not exists.',
             data: err
         });
