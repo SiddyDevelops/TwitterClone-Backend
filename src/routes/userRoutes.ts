@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
+import { adminAccess } from "../middlewares/adminMiddleware";
 const router = Router();
 const prisma = new PrismaClient();
 
@@ -30,7 +31,7 @@ router.post('/', async (req,res)=>{
 });
 
 // List Users
-router.get('/', async (req,res)=>{
+router.get('/', adminAccess, async (req,res)=>{
     const allUsers = await prisma.user.findMany({
         //select: { id:true, name: true, image:true}
     });

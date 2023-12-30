@@ -72,20 +72,40 @@ router.get('/:id', async (req,res)=>{
 router.put('/:id', async (req,res)=>{
     const { id } = req.params;
     const { content,image } = req.body;
-    try{
-        const response = await prisma.tweet.update({
-            where: { id: Number(id) },
-            data: { content,image }
-        });
-        res.status(200).json({
-            status: 200,
-            message: 'Tweet updated successfully.',
-            data: response
-        });
+
+    // @ts-ignore
+    const user = req.user;
+    try {
+        const tweet = await prisma.tweet.findUniqueOrThrow({ where: { id: Number(id)}, include: {user:true}});
+        if(tweet.userId === user.id) {
+            try{
+                const response = await prisma.tweet.update({
+                    where: { id: Number(id) },
+                    data: { content,image }
+                });
+                res.status(200).json({
+                    status: 200,
+                    message: 'Tweet updated successfully.',
+                    data: response
+                });
+            } catch(err) {
+                res.status(400).json({
+                    status: 400,
+                    message: 'Failed to update the Tweet.',
+                    data: err
+                });
+            }
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: 'This tweet does not belong to this user.',
+                data: null
+            });
+        }
     } catch(err) {
-        res.status(400).json({
-            status: 400,
-            message: 'Failed to update the Tweet.',
+        res.status(404).json({
+            status: 404,
+            message: 'Tweet does not exists.',
             data: err
         });
     }
@@ -94,13 +114,32 @@ router.put('/:id', async (req,res)=>{
 // Delete Tweet
 router.delete('/:id', async (req,res)=>{
     const { id } = req.params;
-    try{
-        const response = await prisma.tweet.delete({ where: { id: Number(id) }});
-        res.status(200).json({
-            status: 200,
-            message: 'Tweet deleted successfully.',
-            data: response
-        });
+    // @ts-ignore
+    const user = req.user;
+    try {
+        const tweet = await prisma.tweet.findUniqueOrThrow({ where: { id: Number(id)}, include: {user:true}});
+        if(tweet.userId === user.id) {
+            try{
+                const response = await prisma.tweet.delete({ where: { id: Number(id) }});
+                res.status(200).json({
+                    status: 200,
+                    message: 'Tweet deleted successfully.',
+                    data: response
+                });
+            } catch(err) {
+                res.status(404).json({
+                    status: 404,
+                    message: 'Tweet does not exists.',
+                    data: err
+                });
+            }
+        } else {
+            res.status(404).json({
+                status: 404,
+                message: 'This tweet does not belong to this user.',
+                data: null
+            });
+        }
     } catch(err) {
         res.status(404).json({
             status: 404,
